@@ -137,5 +137,5 @@ export class Service {
         }
     }
 }
-const seervice = new Service();
-export default seervice;
+const service = new Service();
+export default service;
