@@ -1,6 +1,7 @@
 import Container from "./container/Container";
 import Footer from "./Footer/Footer";
 import Header from "./Header/Header";
+import PostForm from "./post-form/PostForm";
 import { Protected } from './AuthLayout'
 import Button from "./Button";
 import Input from "./Input";
@@ -11,4 +12,4 @@ import PostCard from "./PostCard"
 import RTE from "./RTE";
 import Select from "./Select";
 import Signup from "./Signup";
-export { Header, Footer, Container, Logo, LogoutBtn, Button, Input, Login, PostCard, Select, RTE, Signup, Protected };
+export { Header, Footer, Container, Logo, LogoutBtn, Button, Input, Login, PostCard, Select, RTE, Signup, Protected, PostForm };
