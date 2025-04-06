@@ -1,3 +1,30 @@
+
+// import { createSlice } from "@reduxjs/toolkit";
+
+// const initialState = {
+//     status: false,
+//     userData: null,
+// }
+
+// const authSlice = createSlice({
+//     name: "auth",
+//     initialState,
+//     reducers: {
+//         login: (state, action) => {
+//             state.status = true;
+//             state.userData = action.payload; // Change this line - don't expect nested userData
+//         },
+//         logout: (state) => {
+//             state.status = false;
+//             state.userData = null;
+//         }
+//     }
+// });
+
+// export const { login, logout } = authSlice.actions;
+// export default authSlice.reducer;
+
+
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -8,10 +35,10 @@ const initialState = {
 const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducer: {
+    reducers: {
         login: (state, action) => {
             state.status = true;
-            state.userData = action.payload.userData;
+            state.userData = action.payload; // Change this line - don't expect nested userData
         },
         logout: (state) => {
             state.status = false;
@@ -19,6 +46,6 @@ const authSlice = createSlice({
         }
     }
 });
-export const { login, logout } = authSlice.actions;
 
+export const { login, logout } = authSlice.actions;
 export default authSlice.reducer;

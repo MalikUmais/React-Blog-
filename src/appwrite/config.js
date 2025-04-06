@@ -1,5 +1,4 @@
 import conf from "../conf/conf";
-
 import { Client, ID, Databases, Storage, Query } from "appwrite";
 
 export class Service {
@@ -9,16 +8,17 @@ export class Service {
 
     constructor() {
         this.client
-            .setEndpoint(conf.appwriteUrl) // Your API Endpoint
-            .setProject(conf.appwriteProjectId); // Your project ID;
+            .setEndpoint(conf.appwriteUrl)
+            .setProject(conf.appwriteProjectId);
         this.databases = new Databases(this.client);
         this.bucket = new Storage(this.client);
     }
-    //method to create a post
+
+    // Method to create a post
     async createPost({ title, slug, content, featuredImage, status, userId }) {
         try {
             return await this.databases.createDocument(
-                conf.appwriteDtabaseId,
+                conf.appwriteDatabaseId, // Changed from appwriteDtabaseId
                 conf.appwriteCollectionId,
                 slug,
                 {
@@ -28,18 +28,18 @@ export class Service {
                     status,
                     userId,
                 }
-            )
+            );
         } catch (err) {
+            console.error("Create post error:", err);
             throw err;
-
         }
     }
 
-    //method to update post
+    // Method to update post
     async updatePost(slug, { title, content, featuredImage, status }) {
         try {
             return await this.databases.updateDocument(
-                conf.appwriteDtabaseId,
+                conf.appwriteDatabaseId, // Changed from appwriteDtabaseId
                 conf.appwriteCollectionId,
                 slug,
                 {
@@ -48,94 +48,98 @@ export class Service {
                     featuredImage,
                     status,
                 }
-            )
+            );
         } catch (err) {
+            console.error("Update post error:", err);
             throw err;
         }
     }
 
-    //method to delete post
+    // Method to delete post
     async deletePost(slug) {
         try {
             await this.databases.deleteDocument(
-                conf.appwriteDtabaseId,
+                conf.appwriteDatabaseId, // Changed from appwriteDtabaseId
                 conf.appwriteCollectionId,
                 slug,
             );
             return true;
         } catch (err) {
+            console.error("Delete post error:", err);
             return false;
         }
     }
 
-    //method to get post
+    // Method to get post
     async getPost(slug) {
         try {
             return await this.databases.getDocument(
-                conf.appwriteDtabaseId,
+                conf.appwriteDatabaseId, // Changed from appwriteDtabaseId
                 conf.appwriteCollectionId,
                 slug,
-            )
-
+            );
         } catch (err) {
+            console.error("Get post error:", err);
             throw err;
-
         }
     }
 
-    //method to get all posts
+    // Method to get all posts
     async getPosts(queries = [Query.equal('status', 'active')]) {
         try {
             return await this.databases.listDocuments(
-                conf.appwriteDtabaseId,
+                conf.appwriteDatabaseId, // Changed from appwriteDtabaseId
                 conf.appwriteCollectionId,
                 queries,
-            )
-
+            );
         } catch (err) {
+            console.error("Get posts error:", err);
             throw err;
-
         }
     }
 
-    //file upload service
-    //method to upload file
+    // File upload service
+    // Method to upload file
     async uploadFile(file) {
         try {
             return await this.bucket.createFile(
                 conf.appwriteBucketId,
                 ID.unique(),
                 file,
-            )
+            );
         } catch (err) {
+            console.error("Upload file error:", err);
             return false;
-            
         }
     }
-    //method to delete file
+
+    // Method to delete file
     async deleteFile(fileId) {
         try {
             await this.bucket.deleteFile(
                 conf.appwriteBucketId,
                 fileId,
-            )
+            );
             return true;
         } catch (err) {
+            console.error("Delete file error:", err);
             return false;
-            
         }
     }
-    //method to get file preview
+
+    // Method to get file preview
     async getFilePreview(fileId) {
         try {
-            return await this.bucket.getFilePreview(
+            return this.bucket.getFilePreview(
                 conf.appwriteBucketId,
                 fileId,
-            )
+            );
         } catch (err) {
+            console.error("Get file preview error:", err);
             throw err;
         }
     }
 }
+
 const service = new Service();
 export default service;

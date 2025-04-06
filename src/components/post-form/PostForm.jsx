@@ -18,13 +18,12 @@ function PostForm({ post }) {
 
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
-  // const userData=useSelector(state=>state.user.userData);
 
   const submit = async (data) => {
     if (post) {
-      const file = data.image[0] ? service.uploadFile(data.image[0]) : null;
+      const file = data.image[0] ? await service.uploadFile(data.image[0]) : null;
       if (file) {
-        service.deleteFile(post.featuredImage);
+        await service.deleteFile(post.featuredImage);
       }
       const dbPost = await service.updatePost(post.$id, {
         ...data,
@@ -54,7 +53,7 @@ function PostForm({ post }) {
       return value
         .trim()
         .toLowerCase()
-        .replace(/^[a-zA-Z\d\s]+/g, "-")
+        .replace(/[^a-zA-Z\d\s]+/g, "-") // Fixed regex to properly handle special characters
         .replace(/\s/g, "-");
     }
     return "";
@@ -107,7 +106,7 @@ function PostForm({ post }) {
         {post && (
           <div className="w-full mb-4">
             <img
-              src={appwriteService.getFilePreview(post.featuredImage)}
+              src={service.getFilePreview(post.featuredImage)}
               alt={post.title}
               className="rounded-lg"
             />
