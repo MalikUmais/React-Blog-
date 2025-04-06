@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import service from "../service/service";
+import service from "../appwrite/config";
 import { Container, PostCard } from "../components";
-import { retry } from "@reduxjs/toolkit/query";
+// import { retry } from "@reduxjs/toolkit/query";
 
 function Home() {
   const [posts, setPosts] = useState([]);
