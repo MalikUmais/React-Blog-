@@ -29,7 +29,7 @@ export class AuthService {
 
     async login({ email, password }) {
         try {
-            const session = await this.account.createEmailSession(email, password);
+            const session = await this.account.createEmailPasswordSession(email, password);
             if (session) {
                 // Return user data after successful login
                 return this.getCurrentUser();
