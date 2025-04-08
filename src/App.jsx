@@ -1,3 +1,5 @@
+
+
 import { useState, useEffect } from "react";
 import "./App.css";
 import { useDispatch } from "react-redux";
@@ -9,13 +11,13 @@ import { Outlet } from "react-router-dom";
 function App() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     authService
       .getCurrentUser()
       .then((userData) => {
         if (userData) {
-          dispatch(login(userData)); // Pass userData directly
+          dispatch(login(userData));
         } else {
           dispatch(logout());
         }
@@ -23,17 +25,26 @@ function App() {
       .finally(() => setLoading(false));
   }, [dispatch]);
 
-  return !loading ? (
-    <div className="min-h-screen flex flex-wrap content-between bg-gray-400">
-      <div className="w-full block">
-        <Header/>
-        <main>
-          <Outlet/>
-        </main>
-        <Footer/>
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-pulse flex flex-col items-center">
+          <div className="w-16 h-16 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+          <div className="mt-4 text-indigo-600 font-medium">Loading...</div>
+        </div>
       </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      <Header />
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+      <Footer />
     </div>
-  ) : null;
+  );
 }
 
 export default App;

@@ -1,5 +1,3 @@
-
-
 import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Button, Input, Select, RTE } from "../index";
@@ -13,14 +11,15 @@ function PostForm({ post }) {
   const navigate = useNavigate();
   const userData = useSelector((state) => state.auth.userData);
 
-  const { register, handleSubmit, watch, setValue, control, getValues } = useForm({
-    defaultValues: {
-      title: post?.title || "",
-      slug: post?.$id || "",
-      content: post?.content || "",
-      status: post?.status || "active",
-    },
-  });
+  const { register, handleSubmit, watch, setValue, control, getValues } =
+    useForm({
+      defaultValues: {
+        title: post?.title || "",
+        slug: post?.$id || "",
+        content: post?.content || "",
+        status: post?.status || "active",
+      },
+    });
 
   const submit = async (data) => {
     setLoading(true);
@@ -28,7 +27,7 @@ function PostForm({ post }) {
 
     try {
       let featuredImage = post?.featuredImage;
-      
+
       if (data.image?.[0]) {
         const uploadedFile = await service.uploadFile(data.image[0]);
         if (uploadedFile) {
@@ -91,28 +90,68 @@ function PostForm({ post }) {
   }, [watch, slugTransform, setValue]);
 
   return (
-    <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+    // <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
+    //   {error && (
+    //     <div className="w-full mb-4 px-2">
+    //       <p className="text-red-500 text-center">{error}</p>
+    //     </div>
+    //   )}
+    //   <div className="w-2/3 px-2">
+    //     <Input
+    //       label="Title:"
+    //       placeholder="Enter post title"
+    //       className="mb-4"
+    //       {...register("title", {
+    //         required: true,
+    //       })}
+    //     />
+    //     <Input
+    //       label="Slug:"
+    //       placeholder="Post slug"
+    //       className="mb-4"
+    //       {...register("slug", {
+    //         required: true,
+    //       })}
+    //       onInput={(e) => {
+    //         setValue("slug", slugTransform(e.currentTarget.value), {
+    //           shouldValidate: true,
+    //         });
+    //       }}
+    //     />
+    //     <RTE
+    //       label="Content:"
+    //       name="content"
+    //       control={control}
+    //       defaultValue={getValues("content")}
+    //     />
+    //   </div>
+    //   <div className="w-1/3 px-2">
+    //     <Input
+    //       label="Featured Image:"
+    //       type="file"
+    //       className="mb-4"
+    //       accept="image/png, image/jpg, image/jpeg, image/gif"
+    //       {...register("image", {
+    //         required: !post,
+    //       })}
+    //     />
+    <form onSubmit={handleSubmit(submit)} className="flex flex-wrap gap-6">
       {error && (
-        <div className="w-full mb-4 px-2">
-          <p className="text-red-500 text-center">{error}</p>
+        <div className="w-full px-4 py-3 bg-red-50 rounded-lg border border-red-100">
+          <p className="text-red-600 text-center">{error}</p>
         </div>
       )}
-      <div className="w-2/3 px-2">
+
+      <div className="w-full lg:w-2/3 px-2 space-y-4">
         <Input
           label="Title:"
           placeholder="Enter post title"
-          className="mb-4"
-          {...register("title", {
-            required: true,
-          })}
+          {...register("title", { required: true })}
         />
         <Input
           label="Slug:"
           placeholder="Post slug"
-          className="mb-4"
-          {...register("slug", {
-            required: true,
-          })}
+          {...register("slug", { required: true })}
           onInput={(e) => {
             setValue("slug", slugTransform(e.currentTarget.value), {
               shouldValidate: true,
@@ -126,15 +165,13 @@ function PostForm({ post }) {
           defaultValue={getValues("content")}
         />
       </div>
-      <div className="w-1/3 px-2">
+
+      <div className="w-full lg:w-1/3 px-2 space-y-4">
         <Input
           label="Featured Image:"
           type="file"
-          className="mb-4"
           accept="image/png, image/jpg, image/jpeg, image/gif"
-          {...register("image", {
-            required: !post,
-          })}
+          {...register("image", { required: !post })}
         />
         {post && post.featuredImage && (
           <div className="w-full mb-4">
@@ -159,11 +196,7 @@ function PostForm({ post }) {
           className="w-full"
           disabled={loading}
         >
-          {loading ? (
-            "Processing..."
-          ) : (
-            post ? "Update Post" : "Create Post"
-          )}
+          {loading ? "Processing..." : post ? "Update Post" : "Create Post"}
         </Button>
       </div>
     </form>

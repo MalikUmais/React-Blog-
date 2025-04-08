@@ -1,84 +1,5 @@
-// import React, { useState } from "react";
-// import { Link, useNavigate } from "react-router-dom";
-// import { login as authLogin } from "../store/authSlice";
-// import { Button, Input, Logo } from "./index";
-// import { useDispatch } from "react-redux";
-// import authService from "../appwrite/auth";
-// import {  useForm } from "react-hook-form";
 
-// function Login() {
-//   const navigate = useNavigate();
-//   const dispatch = useDispatch();
-//   const { register, handleSubmit } = useForm();
-//   const [error, setError] = useState("");
-//   const login = async (data) => {
-//     setError("");
-//     try {
-//       const session = await authService.login(data);
-//       if (session) {
-//         const userData = await authService.getCurrentUser();
-//         if (userData) dispatch(authLogin(userData));
-//         navigate("/");
-//       }
-//     } catch (error) {
-//       setError(error.message);
-//     }
-//   };
-//   return (
-//     <div className="flex items-center justify-center w-full">
-//       <div
-//         className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}
-//       >
-//         <div className="mb-2 flex justify-ceneter">
-//           <span className="inline-block w-full max-w-[100px]">
-//             <Logo width="100%" />
-//           </span>
-//         </div>
-//         <h2 className="text-center text-2xl font-bold leading-tight">
-//           Sign in to your account
-//         </h2>
-//         <p className="mt-2 text-center text-base text-black/60">
-//           Don&apos;t have an account?&nbsp;
-//           <Link
-//             to="/signup"
-//             className="font-medium text-primary transition-all duration-200 hover:underline"
-//           >
-//             Sign Up
-//           </Link>
-//         </p>
-//         {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-//         <form onSubmit={handleSubmit(login)} className="mt-8">
-//           <div className="space-y-5">
-//             <Input
-//               label="Email: "
-//               placeholder="Enter your email"
-//               type="email"
-//               {...register("email", {
-//                 required: true,
-//                 validate: {
-//                   matchPattern: (value) =>
-//                     /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-//                     "Email adress must be a valid adress",
-//                 },
-//               })}
-//             />
-//             <Input
-//               label="Password: "
-//               type="password"
-//               placeholder="Enter your password"
-//               {...register("password", {
-//                 required: true,
-//               })}
-//             />
-//             <Button type="submit" clasName="w-full">Sign in</Button>
-//           </div>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// }
 
-// export default Login;
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { login as authLogin } from "../store/authSlice";
@@ -86,73 +7,119 @@ import { Button, Input, Logo } from "./index";
 import { useDispatch } from "react-redux";
 import authService from "../appwrite/auth";
 import { useForm } from "react-hook-form";
+import { HiMail, HiLockClosed } from "react-icons/hi";
 
 function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { register, handleSubmit } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const [error, setError] = useState("");
-  
+  const [isLoading, setIsLoading] = useState(false);
+
   const login = async (data) => {
     setError("");
+    setIsLoading(true);
     try {
       const userData = await authService.login(data);
       if (userData) {
-        dispatch(authLogin(userData)); // Pass userData directly
+        dispatch(authLogin(userData));
         navigate("/");
       }
     } catch (error) {
       setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
-  
+
   return (
-    <div className="flex items-center justify-center w-full">
-      <div className={`mx-auto w-full max-w-lg bg-gray-100 rounded-xl p-10 border border-black/10`}>
-        <div className="mb-2 flex justify-center">
-          <span className="inline-block w-full max-w-[100px]">
-            <Logo width="100%" />
-          </span>
+    <div className="flex items-center justify-center min-h-[calc(100vh-12rem)]">
+      <div className="w-full max-w-md px-8 py-10 bg-white rounded-2xl shadow-xl">
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Logo width="140px" />
+          </div>
+          <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
+          <p className="mt-2 text-gray-600">
+            Sign in to your account to continue
+          </p>
         </div>
-        <h2 className="text-center text-2xl font-bold leading-tight">
-          Sign in to your account
-        </h2>
-        <p className="mt-2 text-center text-base text-black/60">
-          Don&apos;t have an account?&nbsp;
-          <Link
-            to="/signup"
-            className="font-medium text-primary transition-all duration-200 hover:underline"
-          >
-            Sign Up
-          </Link>
-        </p>
-        {error && <p className="text-red-600 mt-8 text-center">{error}</p>}
-        <form onSubmit={handleSubmit(login)} className="mt-8">
-          <div className="space-y-5">
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 rounded-lg border border-red-100">
+            <p className="text-red-600 text-center text-sm">{error}</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit(login)} className="space-y-6">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <HiMail className="text-gray-400" />
+            </div>
             <Input
-              label="Email: "
-              placeholder="Enter your email"
+              placeholder="Email address"
               type="email"
+              className="pl-10"
               {...register("email", {
-                required: true,
-                validate: {
-                  matchPattern: (value) =>
-                    /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(value) ||
-                    "Email address must be a valid address",
+                required: "Email is required",
+                pattern: {
+                  value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
+                  message: "Please enter a valid email address",
                 },
               })}
             />
+            {errors.email && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+              <HiLockClosed className="text-gray-400" />
+            </div>
             <Input
-              label="Password: "
               type="password"
-              placeholder="Enter your password"
+              placeholder="Password"
+              className="pl-10"
               {...register("password", {
-                required: true,
+                required: "Password is required",
               })}
             />
-            <Button type="submit" className="w-full">Sign in</Button>
+            {errors.password && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <Button
+              type="submit"
+              className="w-full py-2.5"
+              disabled={isLoading}
+            >
+              {isLoading ? "Signing in..." : "Sign in"}
+            </Button>
           </div>
         </form>
+
+        <div className="mt-6 text-center">
+          <p className="text-gray-600">
+            Don't have an account?{" "}
+            <Link
+              to="/signup"
+              className="font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+            >
+              Sign up
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
